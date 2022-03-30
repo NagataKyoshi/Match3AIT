@@ -26,15 +26,15 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                //Vector2 tempPos = new Vector2(i,j);
+                Vector2 tempPos = new Vector2(i,j);
 
-                GameObject backgroundTile = Instantiate(tilePrefab, GetWorldPosition(i, j), Quaternion.identity);
+                GameObject backgroundTile = Instantiate(tilePrefab, tempPos, Quaternion.identity);
                 backgroundTile.transform.parent = transform;
                 backgroundTile.name = "(" + i + "," + j + ")";
 
                 //We are picking random objects from our array and we instantiate them with prefabs to tile
                 int piecesToUse = Random.Range(0, pieces.Length);
-                GameObject piece = Instantiate(pieces[piecesToUse], GetWorldPosition(i, j), Quaternion.identity);
+                GameObject piece = Instantiate(pieces[piecesToUse], tempPos, Quaternion.identity);
                 piece.transform.parent = transform;
                 piece.name = "(" + i + "," + j + ")";
 
@@ -43,8 +43,9 @@ public class Grid : MonoBehaviour
         }
     }
 
-    Vector2 GetWorldPosition(int x, int y)
-    {
-        return new Vector2(transform.position.x - width / 2.0f + x, transform.position.y + height / 2.0f - y);
-    }
+    //if i use this function i had problem swiping system because array down to negative so giving error
+    //Vector2 GetWorldPosition(int x, int y)
+    //{
+    //    return new Vector2(transform.position.x - width / 2.0f + x, transform.position.y + height / 2.0f - y);
+    //}
 }

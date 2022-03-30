@@ -33,33 +33,33 @@ public class Piece : MonoBehaviour
         targetX = column;
         targetY = row;
 
-        //if (Mathf.Abs(targetX - transform.position.x) > .1)
-        //{
-        //    //move towards to the target
-        //    tempPos = new Vector2(targetX, transform.position.y);
-        //    transform.position = Vector2.Lerp(transform.position, tempPos, .4f);
-        //}
-        //else
-        //{
-        //    //set the position
-        //    tempPos = new Vector2(targetX, transform.position.y);
-        //    transform.position = tempPos;
-        //    grid.allPieces[column, row] = this.gameObject;
-        //}
+        if (Mathf.Abs(targetX - transform.position.x) > .1)
+        {
+            //move towards to the target
+            tempPos = new Vector2(targetX, transform.position.y);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .1f);
+        }
+        else
+        {
+            //set the position
+            tempPos = new Vector2(targetX, transform.position.y);
+            transform.position = tempPos;
+            grid.allPieces[column, row] = this.gameObject;
+        }
 
-        //if (Mathf.Abs(targetY - transform.position.y) > .1)
-        //{
-        //    //move towards to the target
-        //    tempPos = new Vector2(transform.position.x, targetY);
-        //    transform.position = Vector2.Lerp(transform.position, tempPos, .4f);
-        //}
-        //else
-        //{
-        //    // set the position
-        //    tempPos = new Vector2(transform.position.x, targetY);
-        //    transform.position = tempPos;
-        //    grid.allPieces[column, row] = gameObject;
-        //}
+        if (Mathf.Abs(targetY - transform.position.y) > .1)
+        {
+            //move towards to the target
+            tempPos = new Vector2(transform.position.x, targetY);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .1f);
+        }
+        else
+        {
+            // set the position
+            tempPos = new Vector2(transform.position.x, targetY);
+            transform.position = tempPos;
+            grid.allPieces[column, row] = gameObject;
+        }
     }
 
     private void OnMouseDown()
@@ -76,7 +76,7 @@ public class Piece : MonoBehaviour
     void CalculateAngle()
     {
         swipeAngle = Mathf.Atan2(lastTouchPos.y - firstTouchPos.y, lastTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI;
-        Debug.Log(swipeAngle);
+        //Debug.Log(swipeAngle);
         MovePieces();
     }
 
