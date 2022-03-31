@@ -58,8 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Grid.cs" />
     <Compile Include="Assets\Scripts\BackgroundTile.cs" />
-    <Compile Include="Assets\Scripts\Piece.cs" />
-    <Compile Include="Assets\Scripts\SwipeController.cs" />
+    <Compile Include="Assets\Scripts\PieceControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
