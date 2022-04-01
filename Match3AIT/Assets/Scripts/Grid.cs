@@ -7,6 +7,7 @@ public class Grid : MonoBehaviour
 
     public int width;
     public int height;
+    public int offset;
     public GameObject tilePrefab;
     private BackgroundTile[,] allTiles;
     public GameObject[] pieces;
@@ -26,7 +27,7 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                Vector2 tempPos = new Vector2(i, j);
+                Vector2 tempPos = new Vector2(i, j + offset);
 
                 GameObject backgroundTile = Instantiate(tilePrefab, tempPos, Quaternion.identity);
                 backgroundTile.transform.parent = transform;
@@ -44,6 +45,9 @@ public class Grid : MonoBehaviour
 
 
                 GameObject piece = Instantiate(pieces[piecesToUse], tempPos, Quaternion.identity);
+                piece.GetComponent<PieceControl>().row = j;
+                piece.GetComponent<PieceControl>().column = i;
+
                 piece.transform.parent = transform;
                 piece.name = "(" + i + "," + j + ")";
 
@@ -52,6 +56,7 @@ public class Grid : MonoBehaviour
         }
     }
 
+    #region Matching system
     private bool IsMatchingBegan(int column, int row, GameObject piece)
     {
         if (column > 1 && row > 1)
@@ -69,7 +74,7 @@ public class Grid : MonoBehaviour
         {
             if (row > 1)
             {
-                if (allPieces[column, row - 1].tag == piece.tag && allPieces[column, row - 2 ].tag == piece.tag)
+                if (allPieces[column, row - 1].tag == piece.tag && allPieces[column, row - 2].tag == piece.tag)
                 {
                     return true;
                 }
@@ -87,9 +92,12 @@ public class Grid : MonoBehaviour
         return false;
     }
 
+    #endregion
+
+    #region Destroying
     private void DestroyMatches(int column, int row)
     {
-        if (allPieces[column,row].GetComponent<PieceControl>().isMatched)
+        if (allPieces[column, row].GetComponent<PieceControl>().isMatched)
         {
             Destroy(allPieces[column, row]);
             allPieces[column, row] = null;
@@ -102,13 +110,93 @@ public class Grid : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                if (allPieces[i,j] != null)
+                if (allPieces[i, j] != null)
                 {
                     DestroyMatches(i, j);
                 }
             }
         }
+        StartCoroutine(CollapseRow());
     }
+    #endregion
+
+    private IEnumerator CollapseRow()
+    {
+        int nullCount = 0;
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allPieces[i, j] == null)
+                {
+                    nullCount++;
+                }
+                else if (nullCount > 0)
+                {
+                    allPieces[i,j].GetComponent<PieceControl>().row -= nullCount;
+                    allPieces[i, j] = null;
+                }
+            }
+            nullCount = 0;
+        }
+        yield return new WaitForSeconds(.4f);
+        
+        StartCoroutine(FillGridCo());
+    }
+
+    #region Refill
+
+    private void RefillGrid()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allPieces[i,j] == null)
+                {
+                    Vector2 tempPosition = new Vector2(i, j + offset);
+                    int pieceToUse = Random.Range(0, pieces.Length);
+                    GameObject piece = Instantiate(pieces[pieceToUse], tempPosition, Quaternion.identity);
+                    allPieces[i, j] = piece;
+                    piece.GetComponent<PieceControl>().row = j;
+                    piece.GetComponent<PieceControl>().column = i;
+                }
+            }
+        }
+    }
+
+    private bool MatchesOnGrid()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if(allPieces[i,j] != null)
+                {
+                    if (allPieces[i, j].GetComponent<PieceControl>().isMatched)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+    private IEnumerator FillGridCo()
+    {
+        RefillGrid();
+        yield return new WaitForSeconds(.5f);
+
+        while (MatchesOnGrid())
+        {
+            yield return new WaitForSeconds(.5f);
+            DestroyPieces();
+        }
+    }
+
+    #endregion
 
     //if i use this function i had problem swiping system because array down to negative so giving error
     //Vector2 GetWorldPosition(int x, int y)

@@ -25,12 +25,11 @@ public class PieceControl : MonoBehaviour
     void Start()
     {
         grid = FindObjectOfType<Grid>();
-        targetX = (int)transform.position.x;
-        targetY = (int)transform.position.y;
-        row = targetY;
-        column = targetX;
-        oldRow = row;
-        oldColumn = column;
+        //targetX = (int)transform.position.x;
+        //targetY = (int)transform.position.y;
+        //row = targetY;
+        //column = targetX;
+        
     }
 
     void Update()
@@ -50,35 +49,43 @@ public class PieceControl : MonoBehaviour
         {
             //move towards to the target
             tempPos = new Vector2(targetX, transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPos, .1f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .6f);
+
+            if (grid.allPieces[column, row] != gameObject) // When objects destroyed, new pieces coming, with this code we are taking them again as gameobject so they will not glitch anymore
+            {
+                grid.allPieces[column, row] = gameObject;
+            }
         }
         else
         {
             //set the position
             tempPos = new Vector2(targetX, transform.position.y);
-            transform.position = tempPos;
-            grid.allPieces[column, row] = gameObject;
+            transform.position = tempPos;  
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > .1)
         {
             //move towards to the target
             tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPos, .1f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, .6f);
+
+            if (grid.allPieces[column, row] != gameObject)
+            {
+                grid.allPieces[column, row] = gameObject;
+            }
         }
         else
         {
             // set the position
             tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = tempPos;
-            grid.allPieces[column, row] = gameObject;
+            transform.position = tempPos;         
         }
     }
 
 
     public IEnumerator CheckMoveMatch()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(.6f);
         if (otherPiece != null)
         {
             if (!isMatched && !otherPiece.GetComponent<PieceControl>().isMatched)
@@ -96,7 +103,7 @@ public class PieceControl : MonoBehaviour
 
             otherPiece = null;
         }
-        
+
 
 
     }
@@ -126,6 +133,8 @@ public class PieceControl : MonoBehaviour
         {
             //right swipe
             otherPiece = grid.allPieces[column + 1, row];
+            oldRow = row;
+            oldColumn = column;
             otherPiece.GetComponent<PieceControl>().column -= 1;
             column += 1;
         }
@@ -133,6 +142,8 @@ public class PieceControl : MonoBehaviour
         {
             //up swipe
             otherPiece = grid.allPieces[column, row + 1];
+            oldRow = row;
+            oldColumn = column;
             otherPiece.GetComponent<PieceControl>().row -= 1;
             row += 1;
         }
@@ -140,6 +151,8 @@ public class PieceControl : MonoBehaviour
         {
             //Left swipe
             otherPiece = grid.allPieces[column - 1, row];
+            oldRow = row;
+            oldColumn = column;
             otherPiece.GetComponent<PieceControl>().column += 1;
             column -= 1;
         }
@@ -147,6 +160,8 @@ public class PieceControl : MonoBehaviour
         {
             //down swipe
             otherPiece = grid.allPieces[column, row - 1];
+            oldRow = row;
+            oldColumn = column;
             otherPiece.GetComponent<PieceControl>().row += 1;
             row -= 1;
         }
