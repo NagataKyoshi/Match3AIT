@@ -20,7 +20,10 @@ public class PieceControl : MonoBehaviour
     private Vector2 firstTouchPos;
     private Vector2 lastTouchPos;
     public float swipeAngle = 0;
-
+    //Touch Inputs
+    private Vector2 mFirstPosition;
+    private Vector2 mLastPosition;
+    private bool isDragging;
 
     void Start()
     {
@@ -29,13 +32,15 @@ public class PieceControl : MonoBehaviour
         //targetY = (int)transform.position.y;
         //row = targetY;
         //column = targetX;
-        
+
     }
 
     void Update()
     {
         targetX = column;
         targetY = row;
+        //GetInputMobile();
+        //GetInputTest();
 
         FindMatches();
 
@@ -60,7 +65,7 @@ public class PieceControl : MonoBehaviour
         {
             //set the position
             tempPos = new Vector2(targetX, transform.position.y);
-            transform.position = tempPos;  
+            transform.position = tempPos;
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > .1)
@@ -78,7 +83,7 @@ public class PieceControl : MonoBehaviour
         {
             // set the position
             tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = tempPos;         
+            transform.position = tempPos;
         }
     }
 
@@ -108,6 +113,54 @@ public class PieceControl : MonoBehaviour
 
     }
 
+    //void GetInputMobile()
+    //{
+
+    //    if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+    //    {
+    //        mFirstPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+    //        isDragging = true;
+    //    }
+    //    if (isDragging && (Input.touches[0].phase == TouchPhase.Ended || Input.touches[0].phase == TouchPhase.Canceled))
+    //    {
+    //        mLastPosition = Camera.main.ScreenToWorldPoint(Input.touches[0].position);
+    //        CalculateAngle();
+    //        isDragging = false;
+    //    }
+    //}
+    //-------------------------------- TEST INPUTS -------------------------------------
+
+    //void GetInputTest()
+    //{
+    //    if (Input.GetMouseButtonDown(0))
+    //    {
+
+    //        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+    //        if (hit.collider != null)
+    //        {
+    //            Debug.Log("Hit Collider");
+    //            firstTouchPos = hit.transform.position;
+    //        }
+
+    //        // firstTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //    }
+    //    if (Input.GetMouseButtonUp(0))
+    //    {
+
+    //        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+    //        if (hit.collider != null)
+    //        {
+    //            Debug.Log("Hit Collider");
+    //            lastTouchPos = hit.transform.position;
+    //        }
+
+
+    //        //lastTouchPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //        CalculateAngle();
+    //    }
+    //}
 
     private void OnMouseDown()
     {
@@ -122,7 +175,9 @@ public class PieceControl : MonoBehaviour
 
     void CalculateAngle()
     {
-        swipeAngle = Mathf.Atan2(lastTouchPos.y - firstTouchPos.y, lastTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI;
+        swipeAngle = Mathf.Atan2(lastTouchPos.y - firstTouchPos.y, lastTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI; //Mouse Inputs
+
+        //swipeAngle = Mathf.Atan2(mLastPosition.y - mFirstPosition.y, mLastPosition.x - mFirstPosition.x) * 180 / Mathf.PI;
 
         MovePieces();
     }
