@@ -89,9 +89,14 @@ public class PieceControl : MonoBehaviour
                 row = oldRow;
                 column = oldColumn;
             }
+            else
+            {
+                grid.DestroyPieces(); //if any matches it access to grid class and destroy the pieces
+            }
 
             otherPiece = null;
         }
+        
 
 
     }
@@ -111,7 +116,7 @@ public class PieceControl : MonoBehaviour
     void CalculateAngle()
     {
         swipeAngle = Mathf.Atan2(lastTouchPos.y - firstTouchPos.y, lastTouchPos.x - firstTouchPos.x) * 180 / Mathf.PI;
-        //Debug.Log(swipeAngle);
+
         MovePieces();
     }
 
@@ -158,13 +163,16 @@ public class PieceControl : MonoBehaviour
             GameObject rightPiece = grid.allPieces[column + 1, row];
 
             //Check left and right pieces with tag, if they are same it means matched is true
-
-            if (lefPiece.tag == gameObject.tag && rightPiece.tag == gameObject.tag)
+            if (lefPiece != null && rightPiece != null)
             {
-                lefPiece.GetComponent<PieceControl>().isMatched = true;
-                rightPiece.GetComponent<PieceControl>().isMatched = true;
-                isMatched = true;
+                if (lefPiece.tag == gameObject.tag && rightPiece.tag == gameObject.tag && lefPiece != gameObject && rightPiece != gameObject)
+                {
+                    lefPiece.GetComponent<PieceControl>().isMatched = true;
+                    rightPiece.GetComponent<PieceControl>().isMatched = true;
+                    isMatched = true;
+                }
             }
+
         }
 
         // Vertical Matches --------------------------------------------------
@@ -174,12 +182,14 @@ public class PieceControl : MonoBehaviour
             GameObject lowerPiece = grid.allPieces[column, row - 1];
 
             //Check left and right pieces with tag, if they are same it means matched is true
-
-            if (upperPiece.tag == gameObject.tag && lowerPiece.tag == gameObject.tag)
+            if (upperPiece != null && lowerPiece != null)
             {
-                upperPiece.GetComponent<PieceControl>().isMatched = true;
-                lowerPiece.GetComponent<PieceControl>().isMatched = true;
-                isMatched = true;
+                if (upperPiece.tag == gameObject.tag && lowerPiece.tag == gameObject.tag && upperPiece != gameObject && lowerPiece != gameObject)
+                {
+                    upperPiece.GetComponent<PieceControl>().isMatched = true;
+                    lowerPiece.GetComponent<PieceControl>().isMatched = true;
+                    isMatched = true;
+                }
             }
         }
     }
